@@ -80,7 +80,7 @@ NYPD_shooting <- read_csv(url_NYPD)
 ## all data over the years
 data <-NYPD_shooting%>%
   group_by(PRECINCT)%>%
-  summarize(Shooting_By_Precinct=n())
+  summarize(Shooting_Incident=n())
 ```
 
 
@@ -110,7 +110,7 @@ data2016_2020 <-data_with_date %>%
 
 data2016_2020<-data2016_2020%>%
   group_by(precinct)%>%
-  summarize(Shooting_By_Precinct=n())
+  summarize(Shooting_Incident=n())
 ```
 
 ```{r group_2011-2015, include = FALSE}
@@ -119,7 +119,7 @@ data2011_2015 <-data_with_date %>%
 
 data2011_2015<-data2011_2015%>%
   group_by(precinct)%>%
-  summarize(Shooting_By_Precinct=n())
+  summarize(Shooting_Incident=n())
 ```
 
 ```{r group_2006-2010, include = FALSE}
@@ -128,7 +128,7 @@ data2006_2010 <-data_with_date %>%
 
 data2006_2010<-data2006_2010%>%
   group_by(precinct)%>%
-  summarize(Shooting_By_Precinct=n())
+  summarize(Shooting_Incident=n())
 ```
 
 ```{r map_data, include = FALSE}
@@ -152,19 +152,19 @@ map_and_data2020 <-inner_join(mymap,data2016_2020)
 ### uncomment the code below to review code
 
 # ggplot(map_and_data)+
-#   geom_sf(aes(fill=shooting_by_precinct))+
+#   geom_sf(aes(fill=Shooting_Incident))+
 #   scale_fill_gradient(low = "56B1F7", high = "#132B43")
 
 ### ggplot second method to plot data
 
 # p<-ggplot(data = map_and_data)
-# p<-p+geom_sf(aes(fill=shooting_by_precinct))
+# p<-p+geom_sf(aes(fill=Shooting_Incident))
 # p<-p+scale_fill_gradient(low = "56B1F7", high = "#132B43")
 # print(p)
 
 ## tmap method to plot 
 tmapall = tm_shape(map_and_data) +
-   tm_polygons("Shooting_By_Precinct", id= "precinct")+
+   tm_polygons("Shooting_Incident", id= "precinct")+
   tm_layout(legend.position = c("left", "top"), title= 'NYPD Shooting Incidents Precinct Map 2006-2020', title.position = c('left', 'bottom'))
 
 ## uncomment code below and knit in hmtl to enable interactive viewing mode
@@ -228,9 +228,9 @@ NYPD_shooting%>%
   select(PRECINCT)%>%
   table()%>%
   sort(decreasing = T)%>%
-  barplot(main = "Shooting by Precinct sorted from highest to lowest occurance",
+  barplot(main = "Shooting by Precinct sorted from highest to lowest # of Incidents",
           xlab = "Precinct #",
-          ylab = "Occurance")
+          ylab = "# of Incidents")
 ```
 
 
@@ -240,13 +240,13 @@ By plotting all the incidents onto the NYPD Precinct Map, it basically covers th
 
 ```{r map_over_years, echo = FALSE}
 tmap2010 = tm_shape(map_and_data2010) +
-   tm_polygons("Shooting_By_Precinct", id= "precinct")+
+   tm_polygons("Shooting_Incident", id= "precinct")+
   tm_layout(legend.position = c("left", "top"), title= 'NYPD Shooting Incidents Precinct Map 2006-2010', title.position = c('left', 'bottom'))
 tmap2015 = tm_shape(map_and_data2015) +
-   tm_polygons("Shooting_By_Precinct", id= "precinct")+
+   tm_polygons("Shooting_Incident", id= "precinct")+
   tm_layout(legend.position = c("left", "top"), title= 'NYPD Shooting Incidents Precinct Map 2011-2015', title.position = c('left', 'bottom'))
 tmap2020 = tm_shape(map_and_data2020) +
-   tm_polygons("Shooting_By_Precinct", id= "precinct")+
+   tm_polygons("Shooting_Incident", id= "precinct")+
   tm_layout(legend.position = c("left", "top"), title= 'NYPD Shooting Incidents Precinct Map 2016-2020', title.position = c('left', 'bottom'))
 
 tmap_arrange(tmapall,tmap2010,tmap2015,tmap2020)
@@ -280,7 +280,7 @@ NYPD_shooting_manhattan<-NYPD_shooting%>%
   sort(decreasing = T)%>%
   barplot(main = "Manhattan Area Shooting by Precinct #",
         xlab = "Precinct #",
-        ylab = "Occurance")
+        ylab = "# of Incidents")
 
 NYPD_shooting_brooklyn<-NYPD_shooting%>%
   filter(Y_COORD_CD <210000) %>%
@@ -289,14 +289,14 @@ NYPD_shooting_brooklyn<-NYPD_shooting%>%
   sort(decreasing = T)%>%
   barplot(main = "Brooklyn Area Shooting by Precinct #",
         xlab = "Precinct #",
-        ylab = "Occurance")
+        ylab = "# of Incidents")
 ```
 ```{r import_pop_nat, include = FALSE}
 #storing data
 NYC_POP <- read_csv("./nat/New_York_City_Population_By_Neighborhood_Tabulation_Areas.csv")
 
 summary(NYC_POP)
-view(NYC_POP)
+#view(NYC_POP)
 
 ```
 
@@ -327,7 +327,7 @@ map_and_pop <-inner_join(nat_map,NYC_POP)
 #summary(map_and_pop)
 
 # ggplot(map_and_data)+
-#   geom_sf(aes(fill=shooting_by_precinct))+
+#   geom_sf(aes(fill=Shooting_Incident))+
 #   scale_fill_gradient(low = "56B1F7", high = "#132B43")
 
 pop_map=tm_shape(map_and_pop) +
