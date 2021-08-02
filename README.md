@@ -1,7 +1,7 @@
 # NYPD_shooting_incident
  
 Warning, Knitting the document in MacOS will have issues due to version compatiblity issue 
-for some of the librarys, macOS would not download them correctly in Rstudio and one would need to first go to terminal and install homebrew 
+for some of the librarys, macOS would not install them correctly in Rstudio (it will give some exit eror) and one would need to first go to terminal and install homebrew
 
 ## mac knitting instruction
 
