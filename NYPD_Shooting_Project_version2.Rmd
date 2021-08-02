@@ -1,0 +1,373 @@
+---
+title: "NYPD Shooting Incident Data Report"
+author: "Chenning Xu"
+date: "7/7/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r note, include=FALSE}
+# Import, tidy and analyze the NYPD Shooting Incident dataset obtained. Be sure your project is reproducible and contains some visualization and analysis. You may use the data to do any analysis that is of interest to you. You should include at least two visualizations and one model. Be sure to identify any bias possible in the data and in your analysis.
+```
+
+```{r library_import, include=FALSE}
+
+if(!require(pacman)) install.packages("pacman")
+if(!require(sf)) install.packages("sf")
+if(!require(lwgeom)) install.packages("lwgeom")
+if(!require(tmap)) install.packages("tmap")
+# if(!require(choroplethr)) install.packages("choroplethr")
+# if(!require(choroplethrMaps)) install.packages("choroplethrMaps")
+
+library(data.table)
+library(sp)
+library(rgdal)
+library(ggplot2)
+library(tinytex)
+# library(choroplethr)
+# library(choroplethrMaps)
+library(sf)
+library(tmap)
+library(tmaptools)
+pacman::p_load(pacman,party,psych,rio,tidyverse,lubridate)
+
+```
+
+# Abstract
+This report studies and ananlyzes the shooting incidents reported by the New York Police department. The question of interest is to investigate the geosptial correlation of gun violence.
+
+## Acquiring NYPD shooting data sets
+
+* Data for the NYPD shooting data was retrieved from <https://catalog.data.gov/dataset> with the following link <https://data.cityofnewyork.us/api/views/833y-fsy8/rows.csv?accessType=DOWNLOAD>
+
+* Poppulation data for New York City by Neighborhood Tabulation
+<https://data.cityofnewyork.us/City-Government/NTA-map/d3qk-pfyz>
+
+* Shapefile for NYPD shooting data was retried from < link > with the following link
+
+* Shapefile for New York City Population by Neighborhood Tabulation
+<https://data.cityofnewyork.us/City-Government/New-York-City-Population-By-Neighborhood-Tabulatio/swpk-hqdp>
+
+
+```{r get_data, include = FALSE}
+url_NYPD <- "https://data.cityofnewyork.us/api/views/833y-fsy8/rows.csv?accessType=DOWNLOAD"
+```
+
+
+```{r load_NYPD_Precinct_Map, include = FALSE}
+## import map of NYPD Precinct Map
+mymap <- st_read("./Precincts/geo_export_637800f8-c605-45a0-9698-265e5aa08585.shp", stringsAsFactors = FALSE)
+#str(mymap) #print map attribute
+```
+
+```{r nat_map, include = FALSE}
+## importing nat map into the system
+nat_map <- st_read("./nat/geo_export_26dcd1c1-78b3-406e-8035-32d8b63d2ebb.shp", stringsAsFactors = FALSE)
+#str(nat_map) #print map attributes
+
+```
+
+```{r import_data, include = FALSE}
+# Storing data
+NYPD_shooting <- read_csv(url_NYPD)
+```
+
+```{r group_data, include = FALSE}
+## all data over the years
+data <-NYPD_shooting%>%
+  group_by(PRECINCT)%>%
+  summarize(Shooting_By_Precinct=n())
+```
+
+
+
+```{r group_data_per_year, include = FALSE}
+## all data over the years
+data_with_date <-NYPD_shooting%>%
+  mutate(OCCUR_DATE = mdy(OCCUR_DATE))
+```
+
+```{r transform_data, include = FALSE}
+# view(data)
+data<-data %>%
+  rename(
+    precinct = 'PRECINCT'
+  )
+
+data_with_date <-data_with_date %>%
+    rename(
+    precinct = 'PRECINCT'
+  )
+```
+
+```{r group_2016-2020, include = FALSE}
+data2016_2020 <-data_with_date %>%
+  filter(OCCUR_DATE >= as.Date("2016-01-01") & OCCUR_DATE<=as.Date("2020-12-31"))
+
+data2016_2020<-data2016_2020%>%
+  group_by(precinct)%>%
+  summarize(Shooting_By_Precinct=n())
+```
+
+```{r group_2011-2015, include = FALSE}
+data2011_2015 <-data_with_date %>%
+  filter(OCCUR_DATE >= as.Date("2011-01-01") & OCCUR_DATE<=as.Date("2015-12-31"))
+
+data2011_2015<-data2011_2015%>%
+  group_by(precinct)%>%
+  summarize(Shooting_By_Precinct=n())
+```
+
+```{r group_2006-2010, include = FALSE}
+data2006_2010 <-data_with_date %>%
+  filter(OCCUR_DATE >= as.Date("2006-01-01") & OCCUR_DATE<=as.Date("2010-12-31"))
+
+data2006_2010<-data2006_2010%>%
+  group_by(precinct)%>%
+  summarize(Shooting_By_Precinct=n())
+```
+
+```{r map_data, include = FALSE}
+#view(data)
+
+map_and_data <-inner_join(mymap,data)
+map_and_data2010 <-inner_join(mymap,data2006_2010)
+map_and_data2015 <-inner_join(mymap,data2011_2015)
+map_and_data2020 <-inner_join(mymap,data2016_2020)
+
+```
+
+
+```{r plot, echo = FALSE}
+
+#str(map_and_data)
+
+#summary(map_and_data)
+
+### ggplot method for plotting data
+### uncomment the code below to review code
+
+# ggplot(map_and_data)+
+#   geom_sf(aes(fill=shooting_by_precinct))+
+#   scale_fill_gradient(low = "56B1F7", high = "#132B43")
+
+### ggplot second method to plot data
+
+# p<-ggplot(data = map_and_data)
+# p<-p+geom_sf(aes(fill=shooting_by_precinct))
+# p<-p+scale_fill_gradient(low = "56B1F7", high = "#132B43")
+# print(p)
+
+## tmap method to plot 
+tmapall = tm_shape(map_and_data) +
+   tm_polygons("Shooting_By_Precinct", id= "precinct")+
+  tm_layout(legend.position = c("left", "top"), title= 'NYPD Shooting Incidents Precinct Map 2006-2020', title.position = c('left', 'bottom'))
+
+## uncomment code below and knit in hmtl to enable interactive viewing mode
+#tmap_mode("view")
+```
+
+## Process data and clean up values
+
+Looking at the initial summary of the data, categorical data such as BORO, JURISDICTION_CODE, provide no useful information for analysis and were thus removed. Lon_Lat provides the same information as Longitude and Latitude in a more compact form, it is removed in this case.
+
+Categorical information such as perpetrator race and age are often missing in the reported values.They are categorized as NA in the data set and there is no need to modify them.  Missing numerical data are filled in with numerical averages or mean data, in this case, there is no numerical data missing. Perpetrator & victim's race, sex, age group, and occur time information were also removed as they are not of interest in this report.
+
+```{r process_data, include=FALSE}
+
+NYPD_shooting_processed <-NYPD_shooting %>%
+  select(OCCUR_DATE,PRECINCT,everything())%>%
+  select(-Lon_Lat,-JURISDICTION_CODE,-BORO) %>%
+  select(-PERP_AGE_GROUP,-PERP_SEX,-PERP_RACE) %>%
+  select(-VIC_AGE_GROUP,-VIC_SEX,-VIC_RACE) %>%
+  select(-OCCUR_TIME) %>%
+  mutate(PRECINCT = as.factor(PRECINCT))%>%
+  mutate(LOCATION_DESC = as.factor(LOCATION_DESC))%>%
+  # mutate(BORO = as.factor(BORO))%>%
+  # mutate(JURISDICTION_CODE = as.factor(JURISDICTION_CODE))%>%
+  # mutate(VIC_RACE = as.factor(VIC_RACE))%>%
+  # mutate(VIC_SEX= as.factor(VIC_SEX))%>%
+  # mutate(VIC_AGE_GROUP = as.factor(VIC_AGE_GROUP))%>%
+  # mutate(PERP_SEX = as.factor(PERP_SEX))%>%
+  # mutate(PERP_RACE = as.factor(PERP_RACE))%>%
+  # mutate(PERP_AGE_GROUP = as.factor(PERP_AGE_GROUP))%>%
+  
+  mutate(OCCUR_DATE = mdy(OCCUR_DATE))
+
+```
+
+```{r summary}
+summary(NYPD_shooting_processed)
+```
+
+## Initial Investigation
+
+Looking at the data from PRECINT, it appears that precinct 75, 73, and 79 have the highest shooting incidents, then precinct 44 and 47. 
+
+By plotting a histogram of shooting incidents based on precinct number, it is observed that there are about 2 group of precincts that has very high shooting incidents, namely, precinct 40s and precinct 70s. These group of precincts are geographically connected to each other numerically. Interestingly, because these are two peaks with precinct number very far apart, without reviewing the NYPD precinct map, one might draw the conclusion that either precinct 40s and precinct 70s are somehow neighboring districts, or they are two separate locations quite far apart. 
+
+```{r histo_plots, echo = FALSE}
+NYPD_shooting <-NYPD_shooting %>%
+  mutate(PRECINCT = as.numeric(PRECINCT))
+hist(NYPD_shooting$PRECINCT, breaks=10,
+     main = "Histogram of Shooting by Precinct",
+     xlab = "PRECINCT")
+```
+
+### Sorting Shooting Incidents from highest to lowest
+
+A quick sorting of the precincts and rank them from the highest occurrence to the lowest shows some striking features. The logarithmic appearance implies that shooting incidents can be modeled as a exponentially decaying function where the center of the peak values have high shooting activities or crime rate. 
+
+```{r bar_plot, echo=FALSE}
+
+NYPD_shooting%>%
+  select(PRECINCT)%>%
+  table()%>%
+  sort(decreasing = T)%>%
+  barplot(main = "Shooting by Precinct sorted from highest to lowest occurance",
+          xlab = "Precinct #",
+          ylab = "Occurance")
+```
+
+
+### Plotting Incident ontop of Precinct Map
+
+By plotting all the incidents onto the NYPD Precinct Map, it basically covers the entire space.however, it is noticeable that there are less shooting on Staton Island, which is less populated than Manhattan.
+
+```{r map_over_years, echo = FALSE}
+tmap2010 = tm_shape(map_and_data2010) +
+   tm_polygons("Shooting_By_Precinct", id= "precinct")+
+  tm_layout(legend.position = c("left", "top"), title= 'NYPD Shooting Incidents Precinct Map 2006-2010', title.position = c('left', 'bottom'))
+tmap2015 = tm_shape(map_and_data2015) +
+   tm_polygons("Shooting_By_Precinct", id= "precinct")+
+  tm_layout(legend.position = c("left", "top"), title= 'NYPD Shooting Incidents Precinct Map 2011-2015', title.position = c('left', 'bottom'))
+tmap2020 = tm_shape(map_and_data2020) +
+   tm_polygons("Shooting_By_Precinct", id= "precinct")+
+  tm_layout(legend.position = c("left", "top"), title= 'NYPD Shooting Incidents Precinct Map 2016-2020', title.position = c('left', 'bottom'))
+
+tmap_arrange(tmapall,tmap2010,tmap2015,tmap2020)
+
+```
+
+### Plotting Contour Map of the Shooting Incidents
+
+To futher explore the data set, in this case, by plotting the incidents and create a contour map of the shooting incidents, it is obvious that the contour map has 2 peaks. 
+
+```{r ggplot ,echo=FALSE,warn = -1}
+
+ggplot(data = NYPD_shooting, aes(x = X_COORD_CD, y = Y_COORD_CD), fill = ..level..)+
+  geom_point(alpha = 0.1, col ="red") +
+  geom_density2d(aes(color = ..level..))+
+
+  ggtitle("Contour Plot of NYPD Shooting Incidents")+
+  labs(x = "X_Coordinate", y = "Y_Coordinate")
+
+```
+
+### Futher Categorizing data
+
+Given there are two peaks shown in the contour graph separated by Longtidue (Y_COORD_CD) around 210000, sorting them into two bins and re-plot the barplot gives the following results. The two plots still resembles the same exponential decaying function from the center of the peak values. 
+
+```{r binning two peaks, echo=FALSE}
+NYPD_shooting_manhattan<-NYPD_shooting%>%
+  filter(Y_COORD_CD >210000) %>%
+  select(PRECINCT)%>%
+  table()%>%
+  sort(decreasing = T)%>%
+  barplot(main = "Manhattan Area Shooting by Precinct #",
+        xlab = "Precinct #",
+        ylab = "Occurance")
+
+NYPD_shooting_brooklyn<-NYPD_shooting%>%
+  filter(Y_COORD_CD <210000) %>%
+  select(PRECINCT)%>%
+  table()%>%
+  sort(decreasing = T)%>%
+  barplot(main = "Brooklyn Area Shooting by Precinct #",
+        xlab = "Precinct #",
+        ylab = "Occurance")
+```
+```{r import_pop_nat, include = FALSE}
+#storing data
+NYC_POP <- read_csv("./nat/New_York_City_Population_By_Neighborhood_Tabulation_Areas.csv")
+
+summary(NYC_POP)
+view(NYC_POP)
+
+```
+
+
+```{r transform_pop_data, include = FALSE}
+# view(data)
+# rename NTA code to ntacode in the excel file
+NYC_POP<-NYC_POP %>%
+  rename(
+    ntacode = 'NTA Code'
+  )
+
+#view(NYC_POP)
+
+```
+
+## Comparing Population Density Map versus Shooting Incident Map 2016-2020
+
+Population Density Map of New York City Plotted over Neighborhood Tabulation Areas (NTA), which is slightly different from police precinct map. It gives a general idea of population distribution over the area.
+
+
+```{r population, echo = FALSE}
+
+map_and_pop <-inner_join(nat_map,NYC_POP)
+
+#str(map_and_pop)
+
+#summary(map_and_pop)
+
+# ggplot(map_and_data)+
+#   geom_sf(aes(fill=shooting_by_precinct))+
+#   scale_fill_gradient(low = "56B1F7", high = "#132B43")
+
+pop_map=tm_shape(map_and_pop) +
+   tm_polygons("Population", id= "NTA Name")
+
+tmap_arrange(pop_map,tmap2020)
+
+#tmap_mode("view")
+
+```
+
+## Analysis
+
+There is basically two peak shown in the Contour Plot of the shooting incidents, each centered at Brooklyn and Manhattan, which are both heavily populated areas. 
+
+In a sense, this is another method of looking at population density of New York City where heavily populated area have higher concentration of gun violence. 
+
+For city planning purposes, the city planner would want to avoid constructing heavily populated buildings such as public housing and apartments. The fact that the summary report in Location_Desc field shows Multistory Dwelling, public housing and apartment building have the highest rate of shooting raises the question whether there is a positive correlation with the high density housing project and the occurrence of shooting. Then again, most of the Location Description field is categorized with NA or Other, might have other implications.
+
+By comparing the population density map, one can see the shooting incidents tend to happen more frequent in the more densely populated area, with several exceptions. There are several spots in the population density map that were heavily populated in the range of 120,000 ~ 150,000, but has 1-50 shooting. And yes, due to the slight difference in the mapping between NTA and police district, the data would need to combined an remapped to give better representation. Based on difference between population density map and shooting incident map, one would see that shooting doesn't necessarily occurs in the more populated area, some area could be business district wherer more human activites happens.
+
+```{r muder_flag, include=FALSE}
+murder <-NYPD_shooting$STATISTICAL_MURDER_FLAG
+summary(murder)
+```
+Statistically murder flag shows that the majority of the incidents were non-murder related shootings, implies that gun violence does not automatically implies murder. Gun is only a choice of weapon when committing murder. However, the prevalence of shooting incidents is a sign of violence, and as policy makers, gun control in the region needs to be better regulated. For shootings other than murder, whether they are domestic violence or gang related shootings are not categorized.
+
+From a mathematic point of view, the center of the gun violence in those two regions have statistical significance. As gun violence drop exponentially away from the center, such behavior are usually represented as triggering event or an impulse function. In another words, eliminated the triggering event, or the center of the gun violence, would reduce gun violence significantly. My suspicion is gang activity, as this exponential drop in behavior models closely to human activity as well (i.e. sphere of influence). 
+
+
+## Identification of Bias
+
+Perpetrator race and victim race information were excluded from the study, as police statically identifying a person based on skin color could a source a bias.  Violence, and especially gun violence is a symptom of socioeconomic condition and government policy on gun control. Personal bias against racial categorization and violence in general might affect my study on such topic. 
+
+## Conclusion
+
+This is an initial analysis of the data gathered and two distinct center of interest were identified as center of gun violence in the study. Further analysis is required to explore correlation of gun violence map in correlation to socio-economic condition, government policy (gun access), and population density. 
+A remap of the NTA data into Police Precinct data is required to provide more accurate insight into the correlation between population density and gun violence.
+
+
+
+
+
