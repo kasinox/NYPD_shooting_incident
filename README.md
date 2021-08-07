@@ -1,6 +1,10 @@
 # NYPD_shooting_incident
+
+## Knitting in windows environment have no problem so far as there is more support.
+
+if you have any questions about the instructions, please email me at chenning.xu@colorado.edu
  
-Warning, Knitting the document in MacOS will have issues due to version compatiblity issue between R and the sf library
+## Warning, Knitting the document in MacOS will have issues due to version compatiblity issue between R and the sf library
 
 for some of the librarys, macOS would not download them correct in Rstudio and one would need to first go to terminal and install homebrew 
 Warning, Knitting the document in MacOS will have issues due to version compatiblity issue 
@@ -25,6 +29,4 @@ for example, sf library cannot be installed correctly in the most recent macos u
  if the console prompt any missing component that could not be installed correctly, install it in brew and knit it again
  sf package is essential for geospatial mapping in R, somehow the support in MacOs lag behind that of windows
 
-## Knitting in windows environment have no problem so far as there is more support.
 
-if you have any questions about the instructions, please email me at chenning.xu@colorado.edu
