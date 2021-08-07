@@ -1,5 +1,7 @@
 # NYPD_shooting_incident
 
+## Warning, Knitting the document in MacOS will have issues due to version compatiblity issue between R and the sf library
+
 ## Video showing the knitting done correctly in macOS
 
 * http://youtu.be/rdbo0caUAZw?hd=1
@@ -13,13 +15,13 @@
 * in the console of Rstudio, type the following to install tinytex, then the rest should be fine
 * tinytex::install_tinytex()
 
-## Knitting in windows environment have no problem so far as there is more support.
+## Knitting in windows Instruction
 
-* download all the files for knitting the RMD, as there are dependence on the files stored in the folders
+* make sure you download all the files for knitting the RMD, as there are dependence on the files stored in the folders
 
-if you have any questions about the instructions, please email me at chenning.xu@colorado.edu
+* if you have any questions about the instructions, please email me at chenning.xu@colorado.edu
  
-## Warning, Knitting the document in MacOS will have issues due to version compatiblity issue between R and the sf library
+## Knitting in MacOS
 
 * "SF" package is essential for geospatial mapping in R, somehow the support in MacOs lag behind that of windows, I would not recommend knitting this in macOS. I got it to work in windows first, then took me another 4-5 hours to figure out the package dependencies and knit it in macOS.
 
@@ -44,8 +46,10 @@ for example, sf library cannot be installed correctly in the most recent macos u
 
 Once gdal is installed, you will be able to install sf package from source in R. With the current version of proj (7.0.0) on homebrew, installation requires additional configuration:
 
-install.packages("sf", configure.args = "--with-proj-lib=/usr/local/lib/")
+* install.packages("sf", configure.args = "--with-proj-lib=/usr/local/lib/")
 
-if the console prompt any missing component that could not be installed correctly, install it in either Rstudio or brew and knit it again
+* if the console prompt any missing component that could not be installed correctly, install it in either Rstudio or brew and knit it again
+
+* if you have any questions about the instructions, please email me at chenning.xu@colorado.edu
 
 
