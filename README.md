@@ -1,8 +1,15 @@
 # NYPD_shooting_incident
 
-## Video showing the knitting done correctly
+## Video showing the knitting done correctly in macOS
 
 * http://youtu.be/rdbo0caUAZw?hd=1
+
+## Video showing a fresh install of Rstudio in windows and going through the knitting
+
+* http://youtu.be/ynpqcxFjM0A?hd=1
+* you will need to manually install tinytex if you don't have a pdf output library already, the script doesn't automatically install tinytex
+* in the console of Rstudio, type the following to install tinytex, then the rest should be fine
+* tinytex::install_tinytex()
 
 ## Knitting in windows environment have no problem so far as there is more support.
 
