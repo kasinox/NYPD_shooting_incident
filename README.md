@@ -1,5 +1,9 @@
 # NYPD_shooting_incident
 
+## Video showing the knitting done correctly
+
+* http://youtu.be/rdbo0caUAZw?hd=1
+
 ## Knitting in windows environment have no problem so far as there is more support.
 
 * download all the files for knitting the RMD, as there are dependence on the files stored in the folders
