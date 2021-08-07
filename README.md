@@ -2,6 +2,8 @@
 
 ## Knitting in windows environment have no problem so far as there is more support.
 
+* download all the files for knitting the RMD, as there are dependence on the files stored in the folders
+
 if you have any questions about the instructions, please email me at chenning.xu@colorado.edu
  
 ## Warning, Knitting the document in MacOS will have issues due to version compatiblity issue between R and the sf library
