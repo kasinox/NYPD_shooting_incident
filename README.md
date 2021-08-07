@@ -21,12 +21,9 @@ if you have any questions about the instructions, please email me at chenning.xu
  
 ## Warning, Knitting the document in MacOS will have issues due to version compatiblity issue between R and the sf library
 
-sf package is essential for geospatial mapping in R, somehow the support in MacOs lag behind that of windows, I would not recommend knitting this in macOS
-I got it to work in windows first, then took me another 4-5 hours to figure out the package dependencies and knit it in macOS
+* "SF" package is essential for geospatial mapping in R, somehow the support in MacOs lag behind that of windows, I would not recommend knitting this in macOS. I got it to work in windows first, then took me another 4-5 hours to figure out the package dependencies and knit it in macOS.
 
-for some of the librarys, macOS would not download them correct in Rstudio and one would need to first go to terminal and install homebrew 
-Warning, Knitting the document in MacOS will have issues due to version compatiblity issue 
-for some of the librarys, macOS would not download them correctly in Rstudio and one would need to first go to terminal and install homebrew 
+* MacOS would not load the sf lib correctly in Rstudio and one would need to first go to terminal and install homebrew.
 
 ## mac knitting instruction
 
