@@ -6,7 +6,8 @@
 
 ## Video showing a fresh install of Rstudio in windows and going through the knitting
 
-* http://youtu.be/ynpqcxFjM0A?hd=1
+<iframe width="560" height="315" src="https://www.youtube.com/embed/ynpqcxFjM0A" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 * Rstudio will prompt to install the required packages, click yes
 * If the file doesn't knit the first time, the prompt will show there is no pdf - latex output library, it recommend tinytex so that's what I've included in the library.
 * you will need to manually install tinytex, the script doesn't automatically install tinytex
