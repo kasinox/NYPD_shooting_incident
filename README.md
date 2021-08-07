@@ -35,11 +35,20 @@ for some of the librarys, macOS would not download them correctly in Rstudio and
 
 ## install missing libraries
 
+full instruction from this website to install https://r-spatial.github.io/sf/
+
 for example, sf library cannot be installed correctly in the most recent macos update, after install homebrew, type the following in the terminal
 
- * brew install lwgeom
- * brew install sf
- * brew install tmap
+* brew install pkg-config 
+* brew install gdal
+
+Once gdal is installed, you will be able to install sf package from source in R. With the current version of proj (7.0.0) on homebrew, installation requires additional configuration:
+
+install.packages("sf", configure.args = "--with-proj-lib=/usr/local/lib/")
+
+* brew install liblwgeom
+* brew install sf
+* brew install tmap
 
  if the console prompt any missing component that could not be installed correctly, install it in brew and knit it again
  sf package is essential for geospatial mapping in R, somehow the support in MacOs lag behind that of windows
