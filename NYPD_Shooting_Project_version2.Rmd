@@ -3,9 +3,9 @@ title: "NYPD Shooting Incident Data Report"
 ## author: "Chenning Xu"
 date: "7/7/2021"
 output:
-  html_document:
-    toc: yes
   pdf_document:
+    toc: yes
+  html_document:
     toc: yes
 ---
 
@@ -273,7 +273,8 @@ tmap2010x = tm_shape(map_and_data2010x) +
   tm_layout(legend.position = c("left", "top"), title= 'NYPD Shooting Incidents Precinct Map 2010', title.position = c('left', 'bottom'))
 
 tmap_arrange(tmapall,tmap2010,tmap2015,tmap2020, ncol=2,nrow=2)
-tmap_mode("view")
+
+# tmap_mode("view")
 ```
 
 ## Plotting Contour Map of the Shooting Incidents
@@ -370,7 +371,7 @@ pop_map=tm_shape(map_and_pop) +
 # pop_map
 # tmap2010x
 tmap_arrange(pop_map,tmap2010x,ncol = 2,  nrow =1)
-
+# uncomment to knit in html view only
 # tmap_mode("view")
 
 ```
