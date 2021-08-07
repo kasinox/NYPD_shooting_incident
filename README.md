@@ -21,6 +21,9 @@ if you have any questions about the instructions, please email me at chenning.xu
  
 ## Warning, Knitting the document in MacOS will have issues due to version compatiblity issue between R and the sf library
 
+sf package is essential for geospatial mapping in R, somehow the support in MacOs lag behind that of windows, I would not recommend knitting this in macOS
+I got it to work in windows first, then took me another 4-5 hours to figure out the package dependencies and knit it in macOS
+
 for some of the librarys, macOS would not download them correct in Rstudio and one would need to first go to terminal and install homebrew 
 Warning, Knitting the document in MacOS will have issues due to version compatiblity issue 
 for some of the librarys, macOS would not download them correctly in Rstudio and one would need to first go to terminal and install homebrew 
@@ -46,11 +49,6 @@ Once gdal is installed, you will be able to install sf package from source in R.
 
 install.packages("sf", configure.args = "--with-proj-lib=/usr/local/lib/")
 
-* brew install liblwgeom
-* brew install sf
-* brew install tmap
-
- if the console prompt any missing component that could not be installed correctly, install it in brew and knit it again
- sf package is essential for geospatial mapping in R, somehow the support in MacOs lag behind that of windows
+if the console prompt any missing component that could not be installed correctly, install it in either Rstudio or brew and knit it again
 
 
