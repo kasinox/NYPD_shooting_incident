@@ -26,3 +26,5 @@ for example, sf library cannot be installed correctly in the most recent macos u
  sf package is essential for geospatial mapping in R, somehow the support in MacOs lag behind that of windows
 
 ## Knitting in windows environment have no problem so far as there is more support.
+
+if you have any questions about the instructions, please email me at chenning.xu@colorado.edu
