@@ -8,8 +8,8 @@
 
 * http://youtu.be/ynpqcxFjM0A?hd=1
 * Rstudio will prompt to install the required packages, click yes
-* If the file doesn't knit the first time, the prompt will show there is no pdf - latex output library, it recommend tinytex 
-* you will need to manually install tinytex if you don't have a pdf output library already, the script doesn't automatically install tinytex
+* If the file doesn't knit the first time, the prompt will show there is no pdf - latex output library, it recommend tinytex so that's what I've included in the library.
+* you will need to manually install tinytex, the script doesn't automatically install tinytex
 * in the console of Rstudio, type the following to install tinytex, then the rest should be fine
 * tinytex::install_tinytex()
 
