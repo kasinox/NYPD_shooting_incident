@@ -1,4 +1,4 @@
-# NYPD_shooting_incident
+# Note
 
 ## Warning, Knitting the document in MacOS will have issues due to version compatiblity issue between R and the sf library
 
